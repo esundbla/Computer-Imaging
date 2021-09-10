@@ -55,7 +55,7 @@ for i in range(length):  # this is the row
             im1[i, j] = 0
 
         # windowname = 'image'
-# cv2.imshow(windowname,im1) #this should work but not in Colab
+cv2.imshow(windowname,im1) #this should work but not in Colab
 
 
 # cv2.imshow(windowname,im1)

@@ -16,9 +16,9 @@ import math
 windowname = 'image'
 im2 = cv2.imread('prof pic.jpg')
 
-im2[:,:,1]=255  #G try this
-im2[:,:,0]=255  #B try this
-im2[:, :, 2] = 255  # R
+#im2[:,:,1]=255  #G try this
+#im2[:,:,0]=255  #B try this
+#im2[:, :, 2] = 255  # R
 print(im2[0, 0, 0])  # check the first pixel on top left corner
 print(im2[0, 0, 1])  # check the first pixel on top left corner
 print(im2[0, 0, 2])  # check the first pixel on top left corner
