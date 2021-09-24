@@ -3,12 +3,13 @@ Assignment 1 Test program takes input pic pup keep in color
 generates an elliptical portrait with gradient grayscale exterior
 """
 
-
+import os
 import numpy
 import cv2
 import math
 
 windowname = 'me'
+filename = 'outputMe.jpg'
 img = cv2.imread('prof pic.jpg')
 LENGTH, WIDTH, COLORS = img.shape   # global variables of imported pic
 
@@ -33,6 +34,7 @@ for i in range(LENGTH):
                                                     # ellipseFunc and dividing 255 by given val
 
 cv2.imshow(windowname, img)
+cv2.imwrite(filename, img)
 print(LENGTH, WIDTH)
 cv2.waitKey()
 cv2.destroyAllWindows()
