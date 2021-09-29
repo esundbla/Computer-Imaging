@@ -17,7 +17,7 @@ from scipy.signal import convolve2d
 # =============================================================================
 # #1   average filter
 # =============================================================================
-im=cv2.imread('./1_test.jpg')
+im=cv2.imread('prof pic.jpg')
 img = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 length, width = img.shape
 plt.figure()
