@@ -42,9 +42,13 @@ global_filters = {
                         [(1/382), (2/382), (3/382), (4/382), (3/382), (2/382), (1/382)]]),    }
 
 
-def filter(pic, kernal, name):
+def filter(pic, kernal):
     """ Generic Filter func takes picture to process, filter kernal, and filter name"""
-
+    average = cv2.filter2D(pic, -1, global_filters[kernal])
+    windowname = kernal
+    cv2.imshow(windowname, average)
+    cv2.waitKey()
+    #cv2.destroyAllWindows()
 
 
 def Median(pic):
@@ -58,4 +62,15 @@ if __name__ == "__main__":
     windowname = 'Inital Pic'
     cv2.imshow(windowname, pic)
     cv2.waitKey()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
+
+    filter(pic, "Average")
+    filter(pic, "Sobel(V)")
+    filter(pic, "Sobel(H)")
+    filter(pic, "Laplacian")
+    filter(pic, "Gaussian")
+    filter(pic, "Self_Def_Gaus")
+    filter(pic, "Spacial-large")
+
+
+
