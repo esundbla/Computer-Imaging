@@ -39,7 +39,7 @@ global_filters = {
                         [(4/382), (11/382), (25/382), (50/382), (25/382), (11/382), (4/382)],
                         [(3/382), (7/382), (14/382), (25/382), (14/382), (7/382), (3/382)],
                         [(2/382), (4/382), (7/382), (11/382), (7/382), (4/382), (2/382)],
-                        [(1/382), (2/382), (3/382), (4/382), (3/382), (2/382), (1/382)]]),    }
+                        [(1/382), (2/382), (3/382), (4/382), (3/382), (2/382), (1/382)]]),}
 
 
 def filter(pic, kernal):
@@ -49,6 +49,13 @@ def filter(pic, kernal):
     cv2.imshow(windowname, average)
     cv2.waitKey()
     #cv2.destroyAllWindows()
+
+def gradientEdge(pic):
+    """ Gradient edge function """
+    ver = cv2.filter2D(pic, -1, global_filters["Sobel(V)"])
+    hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
+    comb = ver + hor
+    cv2.imshow("gradient", comb)
 
 
 def Median(pic):
@@ -67,6 +74,7 @@ if __name__ == "__main__":
     filter(pic, "Average")
     filter(pic, "Sobel(V)")
     filter(pic, "Sobel(H)")
+    gradientEdge(pic)
     filter(pic, "Laplacian")
     filter(pic, "Gaussian")
     filter(pic, "Self_Def_Gaus")
