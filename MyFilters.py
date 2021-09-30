@@ -55,13 +55,13 @@ def gradientEdge(pic):
     """ Gradient edge function """
     ver = cv2.filter2D(pic, -1, global_filters["Sobel(V)"])
     hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
-    v2 = np.square(ver)
-    h2 = np.square(hor)
-    g2 = v2 + h2
-    gradient = numpy.sqrt(g2)
-    print(gradient)
+    #v2 = np.square(ver)
+    #h2 = np.square(hor)
+    #g2 = v2 + h2
+    #gradient = numpy.sqrt(g2)
+    grad = ver + hor
     windowname = "Gradient Edge"
-    cv2.imshow(windowname, gradient)
+    cv2.imshow(windowname, grad)
 
 
 def Median(pic):
@@ -69,7 +69,7 @@ def Median(pic):
 
 
 if __name__ == "__main__":
-    im = cv2.imread('prof pic.jpg')
+    im = cv2.imread('kuma2.jpg')
     pic = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
     length, width = pic.shape
     windowname = 'Inital Pic'
