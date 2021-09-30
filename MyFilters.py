@@ -1,3 +1,4 @@
+import numpy
 import numpy as np
 import cv2
 from matplotlib import pyplot as plt
@@ -54,8 +55,13 @@ def gradientEdge(pic):
     """ Gradient edge function """
     ver = cv2.filter2D(pic, -1, global_filters["Sobel(V)"])
     hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
-    comb = ver + hor
-    cv2.imshow("gradient", comb)
+    v2 = np.square(ver)
+    h2 = np.square(hor)
+    g2 = v2 + h2
+    gradient = numpy.sqrt(g2)
+    print(gradient)
+    windowname = "Gradient Edge"
+    cv2.imshow(windowname, gradient)
 
 
 def Median(pic):
@@ -69,6 +75,7 @@ if __name__ == "__main__":
     windowname = 'Inital Pic'
     cv2.imshow(windowname, pic)
     cv2.waitKey()
+
     #cv2.destroyAllWindows()
 
     filter(pic, "Average")
