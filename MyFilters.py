@@ -44,11 +44,12 @@ global_filters = {
 
 def filter(pic, kernal):
     """ Generic Filter func takes picture to process, filter kernal, and filter name"""
-    average = cv2.filter2D(pic, -1, global_filters[kernal])
+    filtered = cv2.filter2D(pic, -1, global_filters[kernal])
     windowname = kernal
-    cv2.imshow(windowname, average)
-    cv2.waitKey()
-    #cv2.destroyAllWindows()
+    plt.figure()
+    plt.title(kernal)
+    plt.imshow(filtered, cmap='gray', vmin=0, vmax=255)
+    plt.show()
 
 def gradientEdge(pic):
     """ Gradient edge function """
@@ -58,9 +59,10 @@ def gradientEdge(pic):
     h2 = np.square(hor)
     g2 = v2 + h2
     gradient = np.sqrt(g2)
-    #grad = ver + hor
-    #windowname = "Gradient Edge"
-    cv2.imshow(windowname, gradient)
+    plt.figure()
+    plt.title('Gradient Edge')
+    plt.imshow(gradient, cmap='gray', vmin=0, vmax=255)
+    plt.show()
 
 
 def median(pic):
@@ -79,19 +81,19 @@ def median(pic):
 if __name__ == "__main__":
     im = cv2.imread('kuma2.jpg')
     pic = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-    length, width = pic.shape
-    windowname = 'Inital Pic'
-    #cv2.imshow(windowname, pic)
-    #cv2.waitKey()
-    #filter(pic, "Average")
-    #filter(pic, "Sobel(V)")
-    #filter(pic, "Sobel(H)")
-    #gradientEdge(pic)
+    plt.figure()
+    plt.title('Source Pic')
+    plt.imshow(pic, cmap='gray', vmin=0, vmax=255)
+    plt.show()
+    filter(pic, "Average")
+    filter(pic, "Sobel(V)")
+    filter(pic, "Sobel(H)")
+    gradientEdge(pic)
     median(pic)
-    #filter(pic, "Laplacian")
-    #filter(pic, "Gaussian")
-    #filter(pic, "Self_Def_Gaus")
-    #filter(pic, "Spacial-large")
+    filter(pic, "Laplacian")
+    filter(pic, "Gaussian")
+    filter(pic, "Self_Def_Gaus")
+    filter(pic, "Spacial-large")
 
 
 
