@@ -42,12 +42,12 @@ global_filters = {
                         [(1/382), (2/382), (3/382), (4/382), (3/382), (2/382), (1/382)]]),}
 
 
-def filter(pic, kernal):
-    """ Generic Filter func takes picture to process, filter kernal, and filter name"""
-    filtered = cv2.filter2D(pic, -1, global_filters[kernal])
-    windowname = kernal
+def filter(pic, kernel):
+    """ Generic Filter func takes picture to process, filter kernel, and filter name"""
+    filtered = cv2.filter2D(pic, -1, global_filters[kernel])
+    windowname = kernel
     plt.figure()
-    plt.title(kernal)
+    plt.title(kernel)
     plt.imshow(filtered, cmap='gray', vmin=0, vmax=255)
     plt.show()
 
@@ -57,7 +57,7 @@ def gradientEdge(pic):
     hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
     v2 = np.square(ver)
     h2 = np.square(hor)
-    g2 = v2 + h2
+    g2 = np.add(v2, h2)
     gradient = np.sqrt(g2)
     plt.figure()
     plt.title('Gradient Edge')
