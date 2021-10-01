@@ -110,10 +110,10 @@ median = np.zeros((height,width),dtype=float)
 for i in range(1,height-2):
     for j in range(1,width-2):
         sorted_pixels = sorted(np.ndarray.flatten(img[i-1:i+2,j-1:j+2]))
-        median[i][j] = sorted_pixels[4] 
+        median[i][j] = sorted_pixels[4]
 plt.figure()
 plt.title('median filter')
-plt.imshow(median,cmap='gray', vmin=0, vmax=255) 
+plt.imshow(median,cmap='gray', vmin=0, vmax=255)
 
 # =============================================================================
 # 5  gaussian filter
