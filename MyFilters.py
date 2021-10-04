@@ -50,19 +50,22 @@ def filter(pic, kernel):
     plt.title(kernel)
     plt.imshow(filtered, cmap='gray', vmin=0, vmax=255)
     plt.show()
+    return filtered
 
 def gradientEdge(pic):
-    """ Gradient edge function """
+    """ Gradient edge function combines the verticle and horizontal sobel filters """
     ver = cv2.filter2D(pic, -1, global_filters["Sobel(V)"])
     hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
-    v2 = np.square(ver)
-    h2 = np.square(hor)
-    g2 = np.add(v2, h2)
-    gradient = np.sqrt(g2)
+    #v2 = np.square(ver)
+    #h2 = np.square(hor)
+    #g2 = np.add(v2, h2)
+    #gradient = np.sqrt(g2)
+    gradient = ver + hor
     plt.figure()
     plt.title('Gradient Edge')
     plt.imshow(gradient, cmap='gray', vmin=0, vmax=255)
     plt.show()
+    return gradient
 
 
 def median(pic):
@@ -77,6 +80,7 @@ def median(pic):
     plt.title('median filter')
     plt.imshow(med, cmap='gray', vmin=0, vmax=255)
     plt.show()
+    return med
 
 if __name__ == "__main__":
     im = cv2.imread('kuma2.jpg')
@@ -85,15 +89,32 @@ if __name__ == "__main__":
     plt.title('Source Pic')
     plt.imshow(pic, cmap='gray', vmin=0, vmax=255)
     plt.show()
-    filter(pic, "Average")
-    filter(pic, "Sobel(V)")
-    filter(pic, "Sobel(H)")
-    gradientEdge(pic)
-    median(pic)
-    filter(pic, "Laplacian")
-    filter(pic, "Gaussian")
-    filter(pic, "Self_Def_Gaus")
-    filter(pic, "Spacial-large")
+    #filter(pic, "Average")
+    #filter(pic, "Sobel(V)")
+    #filter(pic, "Sobel(H)")
+    #gradientEdge(pic)
+    #median(pic)
+    #filter(pic, "Laplacian")
+    #filter(pic, "Gaussian")
+    #filter(pic, "Self_Def_Gaus")
+    #filter(pic, "Spacial-large")
+
+    pic2 = cv2.imread('Iris.bmp')
+    detect = filter(pic2, 'Laplacian') + pic2
+    plt.figure()
+    plt.title('Original')
+    plt.imshow(pic2, cmap='gray', vmin=0, vmax=255)
+    plt.show()
+    plt.figure()
+    plt.title('Twice filtered')
+    plt.imshow(detect, cmap='gray', vmin=0, vmax=255)
+    plt.show()
+
+
+
+
+
+
 
 
 
