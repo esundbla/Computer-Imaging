@@ -70,7 +70,7 @@ def gradientEdge(pic):
 
 def median(pic):
     """ Median filter need special implementation """
-    height, width = np.shape(pic)
+    height, width, something = np.shape(pic)
     med = np.ones((height, width), dtype=float)
     for i in range(1, height - 2):
         for j in range(1, width - 2):
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     #filter(pic, "Spacial-large")
 
     pic2 = cv2.imread('Iris.bmp')
-    detect = filter(pic2, 'Laplacian') + pic2
+    detect = filter((filter((filter(filter(pic2, 'Gaussian'), 'Laplacian') * pic2), 'Average') - pic2), 'Laplacian')
     plt.figure()
     plt.title('Original')
     plt.imshow(pic2, cmap='gray', vmin=0, vmax=255)
