@@ -64,15 +64,10 @@ def filter(pic, kernel):
 
 def gradientEdge(pic):
     """ Gradient edge function combines the verticle and horizontal sobel filters """
-    ver = cv2.filter2D(pic, -1, global_filters["Sobel(V)"])
-    hor = cv2.filter2D(pic, -1, global_filters["Sobel(H)"])
-    """ Following block was to aquire gradient edge through distance formula
-        had dificulty plotting inside code the array values changed to unusable data type
-    v2 = np.square(ver)
-    #h2 = np.square(hor)
-    #g2 = np.add(v2, h2)
-    #gradient = np.sqrt(g2)"""
-    gradient = ver + hor    #Used summation of two filters as close approximate of gradient
+    ver = convolve2d(pic, global_filters["Sobel(V)"], mode='same', boundary='symm', fillvalue=0)
+    hor = convolve2d(pic, global_filters["Sobel(H)"] , mode='same', boundary='symm', fillvalue=0)
+    gradient = np.sqrt(np.square(ver) + np.square(hor))
+    gradient *= 255.0/np.max(gradient)
     plt.figure()
     plt.title('Gradient Edge')
     plt.imshow(gradient, cmap='gray', vmin=0, vmax=255)
@@ -123,20 +118,3 @@ if __name__ == "__main__":
     plt.title('Pupil location')
     plt.imshow(detect - pic2, cmap='gray', vmin=0, vmax=255)
     plt.show()
-
-
-    #This was code for an expiremental pattern match of the pupil
-    """
-    patern_blank = np.full((140, 140), 0)
-    h, w = np.shape(patern_blank)
-    for i in range(h):
-        for j in range(w):
-            distance = math.sqrt(((i-70)**2) + ((j-70)**2))
-            if distance < 17.5:
-                patern_blank[i, j] = 255
-    plt.figure()
-    plt.title('Original')
-    plt.imshow(patern_blank, cmap='gray', vmin=0, vmax=255)
-    plt.show()
-    global_filters.update({"patern_match": patern_blank}) #Code to update the filter dictionary 
-    filter(detect, "patern_match")"""
