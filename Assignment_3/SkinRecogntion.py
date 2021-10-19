@@ -29,18 +29,12 @@ def histogram_normalizer(img):
                 pixel_dict[img[i,j]] += 1
             else:
                 pixel_dict.update({img[i,j] :1})
+
     for i in range(length):
         for j in range(width):
-            img[i,j] = (pixel_dict[img[i,j]]/num_pix) * 255
+            img[i,j] = img[i,j] - ((pixel_dict[img[i,j]]/num_pix) * img[i,j])
 
     return img
-
-
-
-
-
-
-
 
 
 
@@ -69,14 +63,20 @@ if __name__ == "__main__":
     plt.imshow(cv.cvtColor(skin_b, cv.COLOR_BGR2RGB))
     plt.show()
 
-    luv = cv.cvtColor(face_b, cv.COLOR_BGR2Luv)
-    l = luv[:, :, 0]
-    luv[:, :, 0] = histogram_normalizer(l)
+    luv = cv.cvtColor(skin_b, cv.COLOR_BGR2LUV)
+    l = luv[:,:,0]
+    luv[:,:,0] = histogram_normalizer(l).astype(np.uint8)
+    plt.figure()
+    plt.title('histogram')
+    plt.imshow(luv)
+    plt.show()
+
     hist = cv.cvtColor(luv, cv.COLOR_LUV2BGR)
     plt.figure()
     plt.title('histogram results')
     plt.imshow(cv.cvtColor(hist, cv.COLOR_BGR2RGB))
     plt.show()
+
 
 
 
