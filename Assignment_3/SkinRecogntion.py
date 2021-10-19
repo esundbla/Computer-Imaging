@@ -32,7 +32,12 @@ def histogram_normalizer(img):
 
     for i in range(length):
         for j in range(width):
-            img[i,j] = img[i,j] - ((pixel_dict[img[i,j]]/num_pix) * img[i,j])
+            pix_perc = pixel_dict[img[i,j]]/num_pix
+            #img[i, j] = img[i,j] - (pix_perc * img[i, j])
+            if pix_perc < 0.019 and pix_perc > 0.001:
+                img[i,j] = img[i,j] - (pix_perc * img[i,j])
+            else:
+                img[i,j] = pix_perc * img[i,j]
 
     return img
 
@@ -63,7 +68,7 @@ if __name__ == "__main__":
     plt.imshow(cv.cvtColor(skin_b, cv.COLOR_BGR2RGB))
     plt.show()
 
-    luv = cv.cvtColor(skin_b, cv.COLOR_BGR2LUV)
+    luv = cv.cvtColor(face_b, cv.COLOR_BGR2LUV)
     l = luv[:,:,0]
     luv[:,:,0] = histogram_normalizer(l).astype(np.uint8)
     plt.figure()

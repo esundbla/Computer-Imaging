@@ -20,6 +20,10 @@ def luv_space_gamma( src, gamma ):
     #// scale back
     l = l * 255
     luv[:,:,0] = l.astype(np.uint8)
+    plt.figure()
+    plt.title('lum test')
+    plt.imshow(luv)
+    plt.show()
     rgb = cv.cvtColor(luv, cv.COLOR_LUV2BGR)
     return rgb
 
