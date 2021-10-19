@@ -37,6 +37,7 @@ def skin_rgb_threshold( src ):
 
     return src * skin_mask.reshape(skin_mask.shape[0], skin_mask.shape[1], 1)
 
+
 def find_local_min( hist ):
 
     kern = np.array(
@@ -89,8 +90,8 @@ plt.figure()
 plt.title('BGR imread from opencv')
 plt.imshow(src)
 plt.show()
-#gamma = luv_space_gamma(src, 0.6)
-luv = cv.cvtColor(src, cv.COLOR_BGR2Luv)
+gamma = luv_space_gamma(src, 0.6)
+"""luv = cv.cvtColor(src, cv.COLOR_BGR2Luv)
 #// extract luminance channel
 l = luv[:,:,0]
 #// normalize 
@@ -101,8 +102,8 @@ l = l**0.6 #np.power(l, 0.6)   #gamma =0.6
 l = l * 256
 luv[:,:,0] =l  #.astype(np.uint8)
 gamma = cv.cvtColor(luv, cv.COLOR_LUV2BGR)
-##cv.imwrite("face_gamma.jpg", gamma)
-#
+##cv.imwrite("face_gamma.jpg", gamma)"""
+
 plt.figure()
 plt.title('rgb')
 plt.imshow(cv.cvtColor(src,cv.COLOR_BGR2RGB))
@@ -114,7 +115,7 @@ plt.imshow(cv.cvtColor(gamma,cv.COLOR_BGR2RGB))
 plt.show()
 
 # detect the skin after gamma 
-rgb = cv.cvtColor(luv, cv.COLOR_LUV2BGR)
+rgb = gamma
 skin = skin_rgb_threshold(rgb)
 plt.figure()
 plt.title('skin detected')
