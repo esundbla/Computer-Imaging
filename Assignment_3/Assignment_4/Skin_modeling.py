@@ -70,6 +70,35 @@ def find_local_min( hist ):
     threshold = deriv.argmax()
     return threshold, deriv
 
+def filter(pic):
+    """ Generic Filter func takes picture to process, filter kernel, and filter name"""
+    avg = np.full((11, 11), (1/(11**2)))
+    filtered = cv.filter2D(pic, -1, avg)
+    plt.figure()
+    plt.title("Gaussian Filter")
+    plt.imshow(filtered, cmap='gray', vmin=0, vmax=255)
+    return filtered
+
+def face_morph(img):
+    """Utilizes morphology to better outline skin region"""
+    #kernel = np.ones((3,3), np.uint8) first tried witha 3,3 array of 1's
+    kernel = np.array(
+        [[0,0,1,0,0],
+        [0,0,1,0,0],
+        [1,1,1,1,1],
+        [0,0,1,0,0],
+        [0,0,1,0,0]], np.uint8
+    )
+    opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel)
+    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel)
+    plt.figure()
+    plt.title('closing morph')
+    plt.imshow(cv.cvtColor(closing, cv.COLOR_BGR2RGB))
+    #plt.show()
+
+
+
+
 if __name__ == "__main__":
     """Main codeblock to perform dilation"""
 
@@ -87,4 +116,10 @@ if __name__ == "__main__":
     plt.figure()
     plt.title('histogram results')
     plt.imshow(cv.cvtColor(hist, cv.COLOR_BGR2RGB))
+
+    avg_hist = filter(hist)
+    test = avg_hist
+
+    face_morph(hist)
+    face_morph(avg_hist)
     plt.show()
