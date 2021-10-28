@@ -75,26 +75,31 @@ def filter(pic):
     avg = np.full((11, 11), (1/(11**2)))
     filtered = cv.filter2D(pic, -1, avg)
     plt.figure()
-    plt.title("Gaussian Filter")
+    plt.title("Average Filter")
     plt.imshow(filtered, cmap='gray', vmin=0, vmax=255)
     return filtered
 
 def face_morph(img):
     """Utilizes morphology to better outline skin region"""
-    #kernel = np.ones((3,3), np.uint8) first tried witha 3,3 array of 1's
-    kernel = np.array(
+    kernel_so = np.ones((5, 5), np.uint8)  # square kernal of 1
+    kernel_sc = np.ones((15,15), np.uint8) #square kernal of 1
+    kernel_c = np.array(
         [[0,0,1,0,0],
         [0,0,1,0,0],
         [1,1,1,1,1],
         [0,0,1,0,0],
         [0,0,1,0,0]], np.uint8
     )
-    opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel)
-    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel)
+    opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel_so)
+    plt.figure()
+    plt.title('opening morph')
+    plt.imshow(cv.cvtColor(opening, cv.COLOR_BGR2RGB))
+
+    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel_sc)
     plt.figure()
     plt.title('closing morph')
     plt.imshow(cv.cvtColor(closing, cv.COLOR_BGR2RGB))
-    #plt.show()
+    return closing
 
 
 
@@ -116,10 +121,8 @@ if __name__ == "__main__":
     plt.figure()
     plt.title('histogram results')
     plt.imshow(cv.cvtColor(hist, cv.COLOR_BGR2RGB))
-
-    avg_hist = filter(hist)
-    test = avg_hist
-
+    avg = filter(hist)
     face_morph(hist)
-    face_morph(avg_hist)
+    face_morph(avg)
+
     plt.show()
