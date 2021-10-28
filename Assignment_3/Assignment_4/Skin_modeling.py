@@ -1,3 +1,10 @@
+"""
+Erik Sundblad
+CS3150
+10/27/2021
+Extending Skin detection utilizing morphology to improve results
+"""
+
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -80,22 +87,30 @@ def filter(pic):
     return filtered
 
 def face_morph(img):
-    """Utilizes morphology to better outline skin region"""
-    kernel_so = np.ones((5, 5), np.uint8)  # square kernal of 1
-    kernel_sc = np.ones((15,15), np.uint8) #square kernal of 1
-    kernel_c = np.array(
+    """Utilizes morphology to better define skin region"""
+    kernel_square_open = np.ones((5, 5), np.uint8)  # square kernal of 1
+    kernel_square_close = np.ones((15,15), np.uint8) #square kernal of 1
+
+    kernel_cross = np.array(    # For testing out results with different shaped structs
         [[0,0,1,0,0],
         [0,0,1,0,0],
         [1,1,1,1,1],
         [0,0,1,0,0],
         [0,0,1,0,0]], np.uint8
     )
-    opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel_so)
+    kernel_circle = np.array(
+        [[0, 0, 1, 0, 0],
+         [0, 1, 1, 1, 0],
+         [1, 1, 1, 1, 1],
+         [0, 1, 1, 1, 0],
+         [0, 0, 1, 0, 0]], np.uint8
+    )
+    opening = cv.morphologyEx(img, cv.MORPH_OPEN, kernel_square_open)
     plt.figure()
     plt.title('opening morph')
     plt.imshow(cv.cvtColor(opening, cv.COLOR_BGR2RGB))
 
-    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel_sc)
+    closing = cv.morphologyEx(opening, cv.MORPH_CLOSE, kernel_square_close)
     plt.figure()
     plt.title('closing morph')
     plt.imshow(cv.cvtColor(closing, cv.COLOR_BGR2RGB))
@@ -121,7 +136,10 @@ if __name__ == "__main__":
     plt.figure()
     plt.title('histogram results')
     plt.imshow(cv.cvtColor(hist, cv.COLOR_BGR2RGB))
+    #created a filtered img after histographical correction to skin detection
     avg = filter(hist)
+
+    #morph both the original and filtered images
     face_morph(hist)
     face_morph(avg)
 

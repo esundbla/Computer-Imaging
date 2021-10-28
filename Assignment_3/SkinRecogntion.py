@@ -72,8 +72,6 @@ def find_local_min( hist ):
              ,0,0,0,2
              ,0,0,0,2
              ,0,0,0,2])
-    #// theres a lot of 0's in there what will throw off
-    #// the convolution
     hist[0] = 0
     deriv = np.convolve(hist, kern, mode='same')
     threshold = deriv.argmax()
