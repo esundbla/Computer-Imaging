@@ -3,6 +3,7 @@
 import cv2
 import math
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 #Given color thresholds
@@ -35,13 +36,42 @@ def show(image, color):
     """ Helper method to display a single image
     with pyplot """
     if (color == "gray"):
-        pyplot.imshow(image, cmap="gray")
+        plt.imshow(image, cmap="gray")
     else:
-        pyplot.imshow(image)
-    pyplot.show()
+        plt.imshow(image)
+    plt.show()
+
+def findPath(img, color):
+    high, low = color_dictionary[color]
+    color_mask = cv2.inRange(img, low, high)
+    path_raw = cv2.bitwise_and(img, img, mask=color_mask)
+    show(path_raw, 'RGB')
+    morphed = morphTool(path_raw)
+
+def morphTool(img):
+    kernel_1 = np.ones((19, 19), np.uint8)  # square kernal of 1
+    kernel_2 = np.ones((19, 19), np.uint8)  # square kernal of 1
+    opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel_2)
+    show(opening, 'RGB')
+    dilation = cv2.dilate(opening, kernel_1, iterations = 5)
+    show(dilation, 'RGB')
+    return dilation
+
 
 
 if __name__ == "__main__":
-    source = cv.imread('test2-1.JPG')
-    source = cv.cvtColor(wall, cv2.COLOR_BGR2RGB)
-    show(source, 'RGB')
+
+    while(True):
+        source = cv2.imread('test2-1.JPG')
+        source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
+        #show(source, 'RGB')
+
+        print('Routes: yelllow, orange, pink, blue, purple')
+        selection = input("Desired route: ").lower()
+        if selection == "":
+            break
+        if selection in color_dictionary:
+            findPath(source, selection)
+        else:
+            print("Invalid path color")
+        print("Select different path or return to exit")
