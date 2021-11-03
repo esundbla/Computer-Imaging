@@ -140,7 +140,11 @@ if __name__ == "__main__":
     avg = filter(hist)
 
     #morph both the original and filtered images
-    face_morph(hist)
+    double = filter(face_morph(hist))
     face_morph(avg)
+    plt.figure()
+    plt.title('filter final')
+    plt.imshow(cv.cvtColor(double, cv.COLOR_BGR2RGB))
+
 
     plt.show()
