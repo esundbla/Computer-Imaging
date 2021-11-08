@@ -45,15 +45,15 @@ def findPath(img, color):
     high, low = color_dictionary[color]
     color_mask = cv2.inRange(img, low, high)
     path_raw = cv2.bitwise_and(img, img, mask=color_mask)
-    show(path_raw, 'RGB')
+    #show(path_raw, 'RGB')
     morphed = morphTool(path_raw)
 
 def morphTool(img):
-    kernel_1 = np.ones((19, 19), np.uint8)  # square kernal of 1
+    kernel_1 = np.ones((27, 27), np.uint8)  # square kernal of 1
     kernel_2 = np.ones((19, 19), np.uint8)  # square kernal of 1
     opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel_2)
-    show(opening, 'RGB')
-    dilation = cv2.dilate(opening, kernel_1, iterations = 5)
+    #show(opening, 'RGB')
+    dilation = cv2.dilate(opening, kernel_1, iterations = 4)
     show(dilation, 'RGB')
     return dilation
 
