@@ -63,34 +63,35 @@ def findPath(img, color):
     luv = cv2.cvtColor(morphed, cv2.COLOR_BGR2LUV)
     l = luv[:, :, 0]
     edge = gradientEdge(l)
-    dial_edge = morphTool2(edge)
-    length, width = dial_edge.shape
-    x_total_pos = []
+    length, width = edge.shape
+    x_bottom_pos = []
     x_top_pos = []
     y_top = 0
-    y_bottom = 3000
+    y_bottom = 0
     for i in range(length):
         for j in range(width):
-            if dial_edge[i, j] > 128:
-                dial_edge[i, j] = 128
+            if edge[i, j] > 128:
+                edge[i, j] = 128
             else:
-                dial_edge[i, j] = 0
-            if dial_edge[i, j] == 128:
-                x_total_pos.append(j)
+                edge[i, j] = 0
+            if edge[i, j] == 128:
+                x_bottom_pos.append(j)
                 if len(x_top_pos) == 0:
-                    y_top = i
+                    y_top = (-i)
                     x_top_pos.append(j)
-                elif i == y_top:
+                elif i == abs(y_top):
                     x_top_pos.append(j)
+                if i > abs(y_bottom):
+                    y_bottom = (-i)
+                    x_bottom_pos.clear()
+                    x_bottom_pos.append(j)
+                elif i == abs(y_bottom):
+                    x_bottom_pos.append(j)
 
-
-
-    x_top_pos.sort()
-    x_total_pos.sort()
-    x_top = x_top_pos[len(x_top_pos)//2]
-    x_bottom = x_total_pos[len(x_top_pos)//2]
+    x_top = sum(x_top_pos) // len(x_top_pos)
+    x_bottom = sum(x_bottom_pos) // len(x_bottom_pos)
     if x_top > x_bottom:
-        slope = ((y_top-y_bottom)/(x_top - x_bottom))
+        slope = ((y_top - y_bottom)/(x_top - x_bottom))
         start = x_bottom
         stop = x_top
     else:
