@@ -1,4 +1,10 @@
-
+"""
+Erik Sundblad
+CS3150
+11/12/2021
+Program to isolate a selected bouldering path off given sample image then highlight said path
+Added additional average path line to define start and finnish of selected path
+"""
 
 import cv2
 import math
@@ -6,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import convolve2d
 
-global_filters = {          #Utilizing a python Dict. to store multiple kerels and there respective names
+global_filters = {          # Kernels for gradient edge filter
     "Sobel(V)": np.array([
          [-1.0, 0.0, 1.0]
         ,[-2.0, 0.0, 2.0]
@@ -19,7 +25,7 @@ global_filters = {          #Utilizing a python Dict. to store multiple kerels a
         ])}
 
 
-#Given color thresholds
+# Given color thresholds
 green_high = (160, 210, 120)
 green_low = (80, 130, 30)
 yellow_high = (255, 255, 75)
@@ -35,9 +41,9 @@ purple_low = (75, 40, 60)
 white_high = (200, 200, 200)
 white_low = (150, 150, 150)
 
-#Dictionary for simple organization
+# Dictionary for simple organization
 color_dictionary = {
-    "green"  : (green_high, green_low),
+    # "green"  : (green_high, green_low), Bad color thresholding results in poor isolation
     "yellow" : (yellow_high, yellow_low),
     "orange" : (orange_high, orange_low),
     "pink"   : (pink_high, pink_low),
@@ -55,14 +61,17 @@ def show(image, color):
     plt.show()
 
 def findPath(img, color):
+    # Read in, extract specific path color, morph path
     high, low = color_dictionary[color]
     color_mask = cv2.inRange(img, low, high)
     path_raw = cv2.bitwise_and(img, img, mask=color_mask)
-    #show(path_raw, 'RGB')
     morphed = morphTool(path_raw)
+    # Convert to LUV to isolate the luminance and apply a gradient edge filter
     luv = cv2.cvtColor(morphed, cv2.COLOR_BGR2LUV)
     l = luv[:, :, 0]
     edge = gradientEdge(l)
+    # Using gradient edge image, clean image if lum > 128 set to 128 otherwise set to 0
+    # Then isolate top and bottom gradient lines and reserve to calculate average path line
     length, width = edge.shape
     x_bottom_pos = []
     x_top_pos = []
@@ -87,9 +96,10 @@ def findPath(img, color):
                     x_bottom_pos.append(j)
                 elif i == abs(y_bottom):
                     x_bottom_pos.append(j)
-
+    # use average x_pos of top and bottom to get x,y co-ordinates for average path line
     x_top = sum(x_top_pos) // len(x_top_pos)
     x_bottom = sum(x_bottom_pos) // len(x_bottom_pos)
+    # Slope and y intercept calculations note y pos are negative to compensate for orientation
     if x_top > x_bottom:
         slope = ((y_top - y_bottom)/(x_top - x_bottom))
         start = x_bottom
@@ -99,24 +109,28 @@ def findPath(img, color):
         start = x_top
         stop = x_bottom
     intercept = y_bottom - (slope * x_bottom)
+    # Draw average line on edge extract
     for x in range(start, stop):
         y = int((slope * x) + intercept)
         edge[(-y), x] = 128
+    # Use dilation morph to better highlight
     path_edge = morphTool2(edge)
-    show(path_edge, 'gray')
+    # Combine edge with original file to "highlight" selected path
     img_luv = cv2.cvtColor(img, cv2.COLOR_BGR2LUV)
     img_luv[:,:, 0] = img_luv[:,:, 0] - (path_edge)
     path_final = cv2.cvtColor(img_luv, cv2.COLOR_LUV2BGR)
+    # Print result
     show(path_final, 'RGB')
 
+
 def morphTool(img):
+    """ First morph to clean color extracton then dialate to outline path sections"""
     kernel_1 = np.ones((35, 35), np.uint8)  # square kernal of 1
     kernel_2 = np.ones((19, 19), np.uint8)  # square kernal of 1
     opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel_2)
-    #show(opening, 'RGB')
     dilation = cv2.dilate(opening, kernel_1, iterations = 4)
-    #show(dilation, 'RGB')
     return dilation
+
 
 def gradientEdge(pic):
     """ Gradient edge function combines the verticle and horizontal sobel filters """
@@ -124,33 +138,30 @@ def gradientEdge(pic):
     hor = convolve2d(pic, global_filters["Sobel(H)"] , mode='same', boundary='symm', fillvalue=0)
     gradient = np.sqrt(np.square(ver) + np.square(hor))
     gradient *= 255.0/np.max(gradient)
-    plt.figure()
-    plt.title('Gradient Edge')
-    plt.imshow(gradient, cmap='gray', vmin=0, vmax=255)
-    plt.show()
     return gradient
 
+
 def morphTool2(img):
+    """ Second morph tool specifically for dilation of gradient edges + path line """
     kernel = np.ones((35, 35), np.uint8)  # square kernal of 1
     dilation = cv2.dilate(img, kernel, iterations=1)
-    show(dilation, 'gray')
     return dilation
-
-
 
 
 if __name__ == "__main__":
 
     while(True):
+        # Loop structure to allow multiple path selection
         source = cv2.imread('test2-1.JPG')
         source = cv2.cvtColor(source, cv2.COLOR_BGR2RGB)
-        #show(source, 'RGB')
+        show(source, 'RGB')
 
         print('Routes: yelllow, orange, pink, blue, purple')
         selection = input("Desired route: ").lower()
         if selection == "":
             break
         if selection in color_dictionary:
+            # Run find path to extract results
             findPath(source, selection)
         else:
             print("Invalid path color")
