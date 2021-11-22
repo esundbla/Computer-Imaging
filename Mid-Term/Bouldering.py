@@ -65,14 +65,14 @@ def findPath(img, color):
     high, low = color_dictionary[color]
     color_mask = cv2.inRange(img, low, high)
     path_raw = cv2.bitwise_and(img, img, mask=color_mask)
-    show(path_raw, 'RGB')
+    #show(path_raw, 'RGB')
     morphed = morphTool(path_raw)
-    show(morphed, 'RGB')
+    #show(morphed, 'RGB')
     # Convert to LUV to isolate the luminance and apply a gradient edge filter
     luv = cv2.cvtColor(morphed, cv2.COLOR_BGR2LUV)
     l = luv[:, :, 0]
     edge = gradientEdge(l)
-    show(edge, 'gray')
+    #show(edge, 'gray')
     # Using gradient edge image, clean image if lum > 128 set to 128 otherwise set to 0
     # Then isolate top and bottom gradient lines and reserve to calculate average path line
     length, width = edge.shape
@@ -118,7 +118,7 @@ def findPath(img, color):
         edge[(-y), x] = 128
     # Use dilation morph to better highlight
     path_edge = morphTool2(edge)
-    show(path_edge, 'gray')
+    #show(path_edge, 'gray')
     # Combine edge with original file to "highlight" selected path
     img_luv = cv2.cvtColor(img, cv2.COLOR_BGR2LUV)
     img_luv[:,:, 0] = img_luv[:,:, 0] - (path_edge)
