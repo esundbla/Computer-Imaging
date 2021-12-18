@@ -1,4 +1,12 @@
-import random
+"""
+Erik Sundblad
+12/17/2021
+CS 3150
+Hair Color Saturation simulator
+A program to isolate pixels correlating with the hair of a sample photo then prompts to
+experiment with saturation values of the RGB space
+"""
+
 import cv2 as cv
 import numpy as np
 from scipy.signal import convolve2d
@@ -19,6 +27,7 @@ global_filters = {          # Kernels for gradient edge filter
 
 
 def pixel_perc_filter(perc, hair_space):
+    """ Create a percent image to multiply with original """
     length, width = hair_space.shape
     percent_filt = np.ones((length, width), np.uint8)
     for i in range(length):
@@ -29,7 +38,7 @@ def pixel_perc_filter(perc, hair_space):
 
 
 def morphTool(img):
-
+    """ Morph tool for generalizing gradient edge detection and creating hair space"""
     kernel_1 = np.ones((17, 17), np.uint8)
     kernel_2 = np.ones((25, 25), np.uint8)
     kernel_3 = np.ones((37, 37), np.uint8)
@@ -52,22 +61,26 @@ def gradientEdge(pic):
     return gradient
 
 if __name__ == "__main__":
+    """Read in pic isolate pixels, prompt for saturations of RGB and output result"""
     initial_img = cv.imread('Charlotte(Crop).jpg')
     length, width, extra = initial_img.shape
     rgb_img = cv.cvtColor(initial_img, cv.COLOR_BGR2RGB)
 
+    #show original
     plt.figure()
     plt.title('original')
     plt.imshow(rgb_img)
 
+    # Extracted unique colors to analyze best approach
+    #red_img = rgb_img[:, :, 0]
+    #blue_img = rgb_img[:, :, 2]
+    #green_img = rgb_img[:, :, 1]
 
-    red_img = rgb_img[:, :, 0]
-    blue_img = rgb_img[:, :, 2]
-    green_img = rgb_img[:, :, 1]
-
+    # Utilizing the LUV space for gradient edge detection
     luv = cv.cvtColor(initial_img, cv.COLOR_BGR2LUV)
     lum = luv[:, :, 0]
 
+    # Filter the edge to threshold out trivial values
     grad = gradientEdge(lum)
     for i in range(length):
         for j in range(width):
@@ -76,14 +89,19 @@ if __name__ == "__main__":
             else:
                 grad[i, j] = 0
 
-
-    morph_grad = morphTool(grad)
-    #plt.figure()
-    #plt.title('luv grad morph')
-    #plt.imshow(morph_grad)
+    plt.figure()
+    plt.title('gradient edge')
+    plt.imshow(grad)
     #plt.show()
 
+    # Morph using gradient edge to create unique spaces in img
+    morph_grad = morphTool(grad)
+    plt.figure()
+    plt.title('luv grad morph')
+    plt.imshow(morph_grad)
+    #plt.show()
 
+    # User inputs percent saturation and then caluculate mask to multiply original by
     red_per = float(input("Red Percent: "))
     new_red = pixel_perc_filter(red_per, morph_grad)
     grn_per = float(input("Green Percent: "))
